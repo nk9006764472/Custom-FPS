@@ -22,18 +22,18 @@ public class PC_InputHandler : MonoBehaviour, InputHandler
         return Input.GetAxis("Mouse Y");
     }
 
-    bool InputHandler.GetAlternateWalk()
+    public bool GetAlternateWalk()
     {
         return Input.GetKey(KeyCode.LeftShift);
     }
 
-    bool InputHandler.GetJump()
+    public bool GetJump()
     {
        return Input.GetKeyDown(KeyCode.Space);
     }
 
-    bool InputHandler.GetShoot()
+    public bool GetShootPressed()
     {
-        throw new System.NotImplementedException();
+        return Input.GetMouseButton(0);
     }
 }

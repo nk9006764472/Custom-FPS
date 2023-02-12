@@ -23,17 +23,17 @@ public class Mobile_InputHandler : MonoBehaviour, InputHandler
     {
        return mobile_Input.LookTouchPanel.VerticalTouch;
     }
-    bool InputHandler.GetAlternateWalk()
+    public bool GetAlternateWalk()
     {
         return mobile_Input.AltWalkButton.IsPressed;
     }
-    bool InputHandler.GetJump()
+    public bool GetJump()
     {
         return mobile_Input.JumpButton.IsPressed;
     }
 
-    bool InputHandler.GetShoot()
+    public bool GetShootPressed()
     {
-        throw new System.NotImplementedException();
+        return mobile_Input.FireButton.IsPressed;
     }
 }

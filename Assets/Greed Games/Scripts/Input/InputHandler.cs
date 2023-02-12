@@ -7,5 +7,5 @@ interface InputHandler
     float GetVerticalLook();
     bool GetAlternateWalk();
     bool GetJump();
-    bool GetShoot();
+    bool GetShootPressed();
 }

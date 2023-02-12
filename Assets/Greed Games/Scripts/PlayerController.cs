@@ -22,25 +22,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 lookRotation;
     private Vector3 downwardVelocity;
 
-    private void Awake() 
+    public void Initialize()
     {
-        InitializeInputHandler();
-    }
-
-    private void InitializeInputHandler()
-    {
-       //if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-       //{
-            inputHandler = gameObject.AddComponent<Mobile_InputHandler>();
-       //}
-       //else if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
-       //{
-        //    inputHandler = gameObject.AddComponent<PC_InputHandler>();
-       //}
-       //else
-       Debug.Log("Not Supported in this device.");
-
-       inputHandler.Initialize();
+        inputHandler = GetComponent<InputHandler>();
     }
 
     private void Update() 
