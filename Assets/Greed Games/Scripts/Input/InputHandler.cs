@@ -8,4 +8,6 @@ interface InputHandler
     bool GetAlternateWalk();
     bool GetJump();
     bool GetShootPressed();
+    bool GetShootBegin();
+    bool GetShootEnd();
 }

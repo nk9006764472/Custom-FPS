@@ -10,6 +10,7 @@ public class GunConfig : ScriptableObject
     public float fireRate;
     public float reloadTime;
     public int bulletCapacity;
+    public float firstShotSpread;
 }
 
 public enum GunClass

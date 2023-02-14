@@ -1,83 +1,72 @@
-    using UnityEngine;
+using UnityEngine;
 
 public class Gun : MonoBehaviour
 {
-    [SerializeField] private GunConfig gunConfig;
-    [SerializeField] private GunMuzzleFlashConfig gunMuzzleFlashConfig;
+    public int RemainingBullets{get{return remainingBullets;} set{remainingBullets = value;}}
+    public GunConfig GunConfig => _gunConfig;
+    public GunMuzzleFlashConfig gunMuzzleFlashConfig => _gunMuzzleFlashConfig;
+    public GunRecoilConfig GunRecoilConfig => _gunRecoilConfig;
+    public PlayerController PlayerController => playerController;
+    public GameObject Decal => _decal;
+    public float ElapsedRecoilCooldown {get{return elapsedRecoilCooldown;} set{elapsedRecoilCooldown = value;}}
 
-    private float coolDownElapsed = 0f;
-    private bool singleFireable = true;
-    private int remainingBulletCount;
-    private float reloadElapsed = 0f;
 
-    private void Awake() 
+    [SerializeField] private GunConfig _gunConfig;
+    [SerializeField] private GunMuzzleFlashConfig _gunMuzzleFlashConfig;
+    [SerializeField] private GunRecoilConfig _gunRecoilConfig;
+    [SerializeField] private GunStateController _stateController;
+    [SerializeField] private GameObject _decal;
+    
+    private int remainingBullets;
+    private float elapsedBetweenShotCooldown = 0f;
+    private float elapsedRecoilCooldown = 0f;
+    private PlayerController playerController;
+
+    public void Initialize(PlayerController _playerController)
     {
-        Initialize();    
+        playerController = _playerController;
     }
 
-    public void Initialize()
+    private void OnEnable() 
     {
-        remainingBulletCount = gunConfig.bulletCapacity;
+        remainingBullets = _gunConfig.bulletCapacity;    
+    }
+
+    public void ShootBegin()
+    {
+        
     }
 
     public void ShootPressed()
     {
-        switch(gunConfig.fireType)
-        {
-            case GunFireType.AUTO : 
-            {
-                if(coolDownElapsed <= 0f)
-                {
-                    Shoot();
-                    coolDownElapsed = 1/gunConfig.fireRate;
-                }
-                break;
-            }
-            case GunFireType.SINGLE :
-            {
-                if(singleFireable == true)
-                {
-                    Shoot();
-                    singleFireable = false;
-                }
-                break;
-            } 
-            case GunFireType.BURST : 
-            {
 
-                break;
+        if(remainingBullets > 0)
+        {
+            if(elapsedBetweenShotCooldown <= 0f)
+            {
+                _stateController.EnterState(GunStateType.FIRE);
+
+                elapsedBetweenShotCooldown = 1/_gunConfig.fireRate;
             }
         }
-
-        if(remainingBulletCount <= 0)
+        else
         {
-            Reload();
+            _stateController.EnterState(GunStateType.RELOAD);
         }
     }
 
-    public void ShootExit()
+    public void ShootEnd()
     {
-        singleFireable = true;
+        if(_stateController.CurrentState == _stateController.States[GunStateType.FIRE])
+        {
+            _stateController.EnterState(GunStateType.IDLE);
+        }
     }
 
     private void Update() 
     {
-        if(coolDownElapsed > 0f)    
-        {
-            coolDownElapsed  -= Time.deltaTime;
-        }
+        elapsedBetweenShotCooldown -= Time.deltaTime;    
+        elapsedRecoilCooldown -= Time.deltaTime;
     }
 
-    private void Reload()
-    {
-    }
-
-
-    private void Shoot()
-    {
-        remainingBulletCount--;
-
-        Debug.Log("Shooting");
-
-    }
 }

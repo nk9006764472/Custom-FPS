@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PC_InputHandler : MonoBehaviour, InputHandler
@@ -35,5 +36,15 @@ public class PC_InputHandler : MonoBehaviour, InputHandler
     public bool GetShootPressed()
     {
         return Input.GetMouseButton(0);
+    }
+
+    public bool GetShootBegin()
+    {
+        return Input.GetMouseButtonDown(0);
+    }
+
+    public bool GetShootEnd()
+    {
+        return Input.GetMouseButtonUp(0);
     }
 }

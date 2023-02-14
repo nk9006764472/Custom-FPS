@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class Mobile_InputHandler : MonoBehaviour, InputHandler
 {
@@ -35,5 +36,15 @@ public class Mobile_InputHandler : MonoBehaviour, InputHandler
     public bool GetShootPressed()
     {
         return mobile_Input.FireButton.IsPressed;
+    }
+
+    public bool GetShootBegin()
+    {
+        return mobile_Input.FireButton.IsBegin;
+    }
+
+    public bool GetShootEnd()
+    {
+        return mobile_Input.FireButton.IsEnd;
     }
 }

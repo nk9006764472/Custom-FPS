@@ -10,12 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 468ac51a0c46e384889306c9ae9aeecb, type: 3}
-  m_Name: Classic
+  m_Name: Frenzy
   m_EditorClassIdentifier: 
-  gunName: Classic
-  fireType: 1
+  gunName: Frenzy
+  fireType: 0
   gunClass: 0
-  power: 25
-  fireRate: 3
-  reloadTime: 3
-  bulletCapacity: 12
+  power: 20
+  fireRate: 5
+  reloadTime: 2
+  bulletCapacity: 13
+  firstShotSpread: 0.3

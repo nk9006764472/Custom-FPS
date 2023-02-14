@@ -2,23 +2,24 @@ using UnityEngine;
 
 public class GunIdleState : GunBaseState
 {
-    protected override void Initialize()
+    public override void Initialize(GunStateController _controller)
     {
         type = GunStateType.IDLE;
+        controller = _controller;
     }
 
-    public override void EnterState(GunStateType stateType)
+    public override void EnterState()
     {
-
+        base.EnterState();
     }
 
     public override void UpdateState()
     {
-
+        base.UpdateState();
     }
 
     public override void ExitState()
     {
-
+        base.ExitState();
     }
 }

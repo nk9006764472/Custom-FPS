@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 468ac51a0c46e384889306c9ae9aeecb, type: 3}
-  m_Name: Frenzy
+  m_Script: {fileID: 11500000, guid: 7ac3c56e581708d4882a05da83f4371a, type: 3}
+  m_Name: Classic
   m_EditorClassIdentifier: 
-  gunName: Frenzy
-  gunClass: 0
-  power: 20
-  fireRate: 5
-  reloadTime: 2
-  bulletCapacity: 13
+  _power: 1.2
+  _multipler: 0.1
+  _recoilCoolDownTime: 1
