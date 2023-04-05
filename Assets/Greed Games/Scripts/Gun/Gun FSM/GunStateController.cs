@@ -20,7 +20,6 @@ public class GunStateController : MonoBehaviour
     {
         Initialize();
 
-        EnterState(GunStateType.IDLE);
     }
 
     private void Initialize()
@@ -30,6 +29,8 @@ public class GunStateController : MonoBehaviour
             _valideStates[i].Initialize(this);
             states.Add(_valideStates[i].Type, _valideStates[i]);
         }
+        
+        EnterState(GunStateType.IDLE);
     }
 
     private void Update() 

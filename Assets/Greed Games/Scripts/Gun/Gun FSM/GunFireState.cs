@@ -1,19 +1,17 @@
 using UnityEngine;
+using DG.Tweening;
+using System.Collections;
 
 public class GunFireState : GunBaseState
 {
     private float elapsedBetweenAutoShot = 0f;
-    private Transform crosshair;
     private float range = 200f;
-    private int bulletInARowCount = 0;
     private float recoilSum = 0f;
 
     public override void Initialize(GunStateController _controller)
     {
         type = GunStateType.FIRE;
         controller = _controller;
-
-        crosshair = controller.Gun.PlayerController.CrossHair;
     }
 
     public override void EnterState()
@@ -21,7 +19,6 @@ public class GunFireState : GunBaseState
         base.EnterState();
 
         elapsedBetweenAutoShot = 0f;
-        bulletInARowCount = 0;
 
         if(controller.Gun.GunConfig.fireType == GunFireType.SINGLE)
         {
@@ -68,15 +65,16 @@ public class GunFireState : GunBaseState
     private void Shoot(float _recoilSum)
     {
         controller.Gun.RemainingBullets--;
-        bulletInARowCount++;
 
-        Ray ray = controller.Gun.PlayerController.FPSCam.ScreenPointToRay(crosshair.position);
+        controller.Gun.CameraRecoil(_recoilSum);
+
+        Ray ray = controller.Gun.PlayerController.FPSCam.ScreenPointToRay(controller.Gun.PlayerController.CrossHair.position);
         ApplyRecoil(ref ray, _recoilSum);
-        //ShotInAccuracy(ref ray);
+        ShotInAccuracy(ref ray);
 
         RaycastHit hit;
         Vector3 hitPosition;
-        if(Physics.Raycast(ray, out hit, range))
+        if (Physics.Raycast(ray, out hit, range))
         {
             hitPosition = hit.point;
         }
@@ -85,21 +83,60 @@ public class GunFireState : GunBaseState
             hitPosition = ray.direction * range;
         }
 
-        Instantiate(controller.Gun.Decal, hit.point + (hit.normal * 0.01f), Quaternion.FromToRotation(Vector3.forward, -hit.normal));
+        StartCoroutine(SpawnDecal(hit));
+        StartCoroutine(SpawnTrail(hitPosition));
+        StartCoroutine(SpawnFlash());
         controller.Gun.ElapsedRecoilCooldown = controller.Gun.GunRecoilConfig._recoilCoolDownTime;
     }
 
-
-
     private void ShotInAccuracy(ref Ray ray)
     {
-        ray.direction = Quaternion.AngleAxis(Random.Range(0f, controller.Gun.GunConfig.firstShotSpread),
-         new Vector3(0f, Random.Range(-1f, 1f), Random.Range(-1f, 1f))) * ray.direction;
+        float spread = controller.Gun.GunConfig.firstShotSpread;
+
+        ray.direction = Quaternion.AngleAxis(Random.Range(-spread, spread), transform.right) * ray.direction;
+        ray.direction = Quaternion.AngleAxis(Random.Range(-spread, spread), transform.forward) * ray.direction;
     }
 
     private void ApplyRecoil(ref Ray ray, float _recoilSum)
     {
-        float recoilSpreadY = Mathf.Pow(_recoilSum, controller.Gun.GunRecoilConfig._power);
-        ray.direction = Quaternion.AngleAxis(recoilSpreadY, new Vector3(0f, 0f, 1f)) * ray.direction;
+        //Vertical Recoil
+        float recoilSpreadY = Mathf.Pow(_recoilSum, controller.Gun.GunRecoilConfig._power) * controller.Gun.GunRecoilConfig._multipler;
+        recoilSpreadY = Mathf.Clamp(recoilSpreadY, 0f, controller.Gun.GunRecoilConfig._maxAngleDeviationY);
+        ray.direction = Quaternion.AngleAxis(recoilSpreadY, transform.right) * ray.direction;
+
+        //Horizontal Recoil
+        float maxRecoilSpreadX = controller.Gun.GunRecoilConfig._maxAngleDeviationX;
+        float recoilSpreadX = Random.Range(-controller.Gun.GunRecoilConfig._angleDeviationX, controller.Gun.GunRecoilConfig._angleDeviationX);
+
+        float currentMaxSpreadX = (recoilSpreadY / controller.Gun.GunRecoilConfig._maxAngleDeviationY) * maxRecoilSpreadX;
+
+        recoilSpreadX = Mathf.Clamp(recoilSpreadX, -currentMaxSpreadX, currentMaxSpreadX);
+        ray.direction = Quaternion.AngleAxis(recoilSpreadX, transform.forward) * ray.direction;
+    }
+
+    private IEnumerator SpawnDecal(RaycastHit hit)
+    {
+        GameObject decal = PoolManager.Instance.GetItem(controller.Gun.Decal);
+        decal.transform.position = hit.point + (hit.normal * 0.01f);
+        decal.transform.rotation = Quaternion.FromToRotation(Vector3.forward, -hit.normal);
+        yield return new WaitForSeconds(5f);
+        PoolManager.Instance.ReturnItem(decal, controller.Gun.Decal.GetInstanceID());
+    }
+
+    private IEnumerator SpawnTrail(Vector3 hitPosition)
+    {
+        GameObject trail = PoolManager.Instance.GetItem(controller.Gun.BulletTrail);
+        trail.transform.position = controller.Gun.MuzzlePoint.position;
+        trail.transform.DOLocalMove(hitPosition, Vector3.Distance(controller.Gun.MuzzlePoint.position, hitPosition) / Random.Range(300f, 500f));
+        yield return new WaitForSeconds(1f);
+        PoolManager.Instance.ReturnItem(trail, controller.Gun.BulletTrail.GetInstanceID());
+    }
+
+    private IEnumerator SpawnFlash()
+    {
+        GameObject flash = PoolManager.Instance.GetItem(controller.Gun.MuzzleFlash);
+        flash.transform.position = controller.Gun.MuzzlePoint.position;
+        yield return new WaitForSeconds(1f);
+        PoolManager.Instance.ReturnItem(flash, controller.Gun.MuzzleFlash.GetInstanceID());
     }
 }

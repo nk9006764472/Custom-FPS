@@ -16,7 +16,7 @@ MonoBehaviour:
   fireType: 0
   gunClass: 0
   power: 20
-  fireRate: 5
-  reloadTime: 2
-  bulletCapacity: 13
+  fireRate: 6
+  reloadTime: 1
+  bulletCapacity: 100
   firstShotSpread: 0.3

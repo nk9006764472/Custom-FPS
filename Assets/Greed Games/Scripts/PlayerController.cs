@@ -2,7 +2,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Transform CrossHair => _crosshair;
+    public Transform FPSCamHolder => _fpsCameraHolder;
     public Camera FPSCam => _fpsCam;
+    public Camera GunCam => _gunCam;
 
     [SerializeField] private float _verticalMoveSpeed;
     [SerializeField] private float _horizontalMoveSpeed;
@@ -16,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _jumpHeight = 1f;
 
     [SerializeField] private CharacterController _controller;
+    [SerializeField] private Transform _fpsCameraHolder;
     [SerializeField] private Camera _fpsCam;
     [SerializeField] private Camera _gunCam;
     [SerializeField] private Mobile_Input mobileInput;
@@ -36,16 +39,16 @@ public class PlayerController : MonoBehaviour
 
     private void InitializeInputHandler()
     {
-        if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-        inputHandler = gameObject.AddComponent<Mobile_InputHandler>();
-        }
-        else if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
-        {
-            inputHandler = gameObject.AddComponent<PC_InputHandler>();
-        }
-        else
-        Debug.Log("Not Supported in this device.");
+       // if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        //{
+            inputHandler = gameObject.AddComponent<Mobile_InputHandler>();
+       // }
+        //else if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+        //{
+        //    inputHandler = gameObject.AddComponent<PC_InputHandler>();
+        //}
+        //else
+        //Debug.Log("Not Supported in this device.");
 
        inputHandler.Initialize();
        _currentGun.Initialize(this);

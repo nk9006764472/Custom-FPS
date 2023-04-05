@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ac3c56e581708d4882a05da83f4371a, type: 3}
   m_Name: Classic
   m_EditorClassIdentifier: 
-  _power: 1.2
-  _multipler: 0.1
-  _recoilCoolDownTime: 1
+  _power: 2
+  _multipler: 2
+  _recoilCoolDownTime: 0.35
+  _maxAngleDeviationY: 12
+  _maxAngleDeviationX: 4
+  _angleDeviationX: 1
