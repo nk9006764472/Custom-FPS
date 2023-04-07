@@ -1,4 +1,6 @@
 using UnityEngine;
+using DG.Tweening;
+
 public class PlayerController : MonoBehaviour
 {
     public Transform CrossHair => _crosshair;
@@ -19,6 +21,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private CharacterController _controller;
     [SerializeField] private Transform _fpsCameraHolder;
+    [SerializeField] private Transform _gunHolder;
     [SerializeField] private Camera _fpsCam;
     [SerializeField] private Camera _gunCam;
     [SerializeField] private Mobile_Input mobileInput;
@@ -31,7 +34,6 @@ public class PlayerController : MonoBehaviour
     private Vector2 lookRotation;
     private Vector3 downwardVelocity;
 
-
     private void Awake() 
     {
         InitializeInputHandler();
@@ -39,16 +41,16 @@ public class PlayerController : MonoBehaviour
 
     private void InitializeInputHandler()
     {
-       // if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-        //{
+        if(Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
             inputHandler = gameObject.AddComponent<Mobile_InputHandler>();
-       // }
-        //else if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
-        //{
-        //    inputHandler = gameObject.AddComponent<PC_InputHandler>();
-        //}
-        //else
-        //Debug.Log("Not Supported in this device.");
+        }
+        else if(Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.WindowsPlayer)
+        {
+            inputHandler = gameObject.AddComponent<PC_InputHandler>();
+        }
+        else
+        Debug.Log("Not Supported in this device.");
 
        inputHandler.Initialize();
        _currentGun.Initialize(this);
@@ -58,11 +60,16 @@ public class PlayerController : MonoBehaviour
     {
         UpdateMovement();
         UpdateLook();
-        CheckShootInput();    
+        CheckShootInput();
+        CheckGunPickInput();
+        CheckGunDropInput();
     }
 
     private void CheckShootInput()
     {
+        if (_currentGun == null)
+            return;
+
         if(inputHandler.GetShootPressed())
         {
             _currentGun.ShootPressed();
@@ -125,6 +132,39 @@ public class PlayerController : MonoBehaviour
     {
         return  Physics.CheckSphere(new Vector3(transform.localPosition.x, transform.localPosition.y - _controller.height/2, transform.localPosition.z),
          0.3f, groundLayerMask);
+    }
+
+    private void CheckGunPickInput()
+    { 
+        
+    }
+
+    private void CheckGunDropInput()
+    {
+        if (_currentGun == null) return;
+
+        if (inputHandler.GetGunDrop())
+        {
+            Rigidbody gunRb = _currentGun.GetComponent<Rigidbody>();
+            gunRb.constraints = RigidbodyConstraints.None;
+            _currentGun.transform.parent = null;
+            gunRb.AddForce(transform.forward * Random.Range(120f, 180f));
+            gunRb.transform.DORotate(new Vector3(Random.Range(-15f, 15f), Random.Range(-15f, 15f), Random.Range(-10f, 10f)), 0.6f);
+            _currentGun = null;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.TryGetComponent<Gun>(out Gun gun))
+        {
+            _currentGun = gun;
+            _currentGun.transform.parent = _gunHolder;
+            _currentGun.transform.localPosition = Vector3.zero;
+            Rigidbody gunRb = _currentGun.GetComponent<Rigidbody>();
+            gunRb.constraints = RigidbodyConstraints.FreezeAll;
+            gun.SetPositionAndRotation();
+        }
     }
 }
 

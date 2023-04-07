@@ -47,4 +47,9 @@ public class PC_InputHandler : MonoBehaviour, InputHandler
     {
         return Input.GetMouseButtonUp(0);
     }
+
+    public bool GetGunDrop()
+    {
+        return Input.GetKeyDown(KeyCode.G);
+    }
 }

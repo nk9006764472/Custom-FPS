@@ -10,4 +10,5 @@ interface InputHandler
     bool GetShootPressed();
     bool GetShootBegin();
     bool GetShootEnd();
+    bool GetGunDrop();
 }

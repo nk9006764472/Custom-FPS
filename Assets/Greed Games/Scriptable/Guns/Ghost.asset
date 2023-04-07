@@ -20,3 +20,4 @@ MonoBehaviour:
   reloadTime: 3
   bulletCapacity: 15
   firstShotSpread: 0.2
+  gunOffset: {x: 0.744, y: -0.48, z: 1.83}

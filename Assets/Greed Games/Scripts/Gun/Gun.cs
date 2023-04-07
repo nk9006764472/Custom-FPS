@@ -33,6 +33,7 @@ public class Gun : MonoBehaviour
     public void Initialize(PlayerController _playerController)
     {
         playerController = _playerController;
+        SetPositionAndRotation();
     }
 
     private void OnEnable() 
@@ -43,6 +44,12 @@ public class Gun : MonoBehaviour
     public void ShootBegin()
     {
         
+    }
+
+    public void SetPositionAndRotation()
+    {
+        transform.localPosition = _gunConfig.gunOffset;
+        transform.localRotation = Quaternion.Euler(-90f, 0f, -180f);
     }
 
     public void ShootPressed()

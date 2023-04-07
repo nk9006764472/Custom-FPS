@@ -47,4 +47,9 @@ public class Mobile_InputHandler : MonoBehaviour, InputHandler
     {
         return mobile_Input.FireButton.IsEnd;
     }
+
+    public bool GetGunDrop()
+    {
+        return true;
+    }
 }
